@@ -78,8 +78,18 @@ public class OrderService {
             Optional<Order> o = orderDao.findById(order.getId());
             if (o.isPresent()) {
                 Order newOrder = o.get();
-                newOrder.setPurchases(order.getPurchases());
-                newOrder.setPurchasingDate(order.getPurchasingDate());
+                List<OrderProduct> purchases = order.getPurchases();
+                if (purchases != null) {
+                    for(OrderProduct op : purchases) {
+                        Product product = productDao.findById(op.getProduct().getId()).get();
+                        op.setProduct(product);
+                        op.setOrder(order);
+                    }
+                    newOrder.setPurchases(purchases);
+                }
+                if (order.getPurchasingDate() != null) {
+                    newOrder.setPurchasingDate(order.getPurchasingDate());
+                }
                 orderDao.save(newOrder);
                 return new Response(true);
             } else {
@@ -90,7 +100,7 @@ public class OrderService {
         }
     }
 
-    public boolean isAdmin(Collection<? extends GrantedAuthority> profiles) {
+    private boolean isAdmin(Collection<? extends GrantedAuthority> profiles) {
         boolean isAdmin = false;
         for(GrantedAuthority profile : profiles) {
             if(profile.getAuthority().equals("ROLE_ADMIN")) {

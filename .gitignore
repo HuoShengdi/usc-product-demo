@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### output artifact ###
+/out/artifacts/usc_product_demo_jar/usc-product-demo.jar
