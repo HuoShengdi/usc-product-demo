@@ -3,6 +3,7 @@ package com.usc.productDemo.service;
 import com.usc.productDemo.TestAuthentication;
 import com.usc.productDemo.beans.*;
 import com.usc.productDemo.dao.OrderDao;
+import com.usc.productDemo.dao.OrderProductDao;
 import com.usc.productDemo.dao.ProductDao;
 import com.usc.productDemo.http.Response;
 import org.junit.jupiter.api.Test;
@@ -31,8 +32,10 @@ class OrderServiceTest {
         OrderService orderService = new OrderService();
         OrderDao mockOrderDao = Mockito.mock(OrderDao.class);
         ProductDao mockProductDao = Mockito.mock(ProductDao.class);
+        OrderProductDao mockOrderProductDao = Mockito.mock(OrderProductDao.class);
         orderService.orderDao = mockOrderDao;
         orderService.productDao = mockProductDao;
+        orderService.orderProductDao = mockOrderProductDao;
         TestAuthentication auth = new TestAuthentication();
         
         User user = new User(1, "foo", "bar", new ArrayList<>());
@@ -44,6 +47,7 @@ class OrderServiceTest {
         
         Order order = new Order(1, user, purchaseList, Date.from(Instant.now()));
         when(mockOrderDao.save(order)).thenReturn(order);
+        when(mockOrderProductDao.save(orderProduct)).thenReturn(orderProduct);
         when(mockProductDao.findById(1)).thenReturn(Optional.of(product));
         Response res = orderService.placeOrder(order, auth);
         
@@ -55,8 +59,10 @@ class OrderServiceTest {
         OrderService orderService = new OrderService();
         OrderDao mockOrderDao = Mockito.mock(OrderDao.class);
         ProductDao mockProductDao = Mockito.mock(ProductDao.class);
+        OrderProductDao mockOrderProductDao = Mockito.mock(OrderProductDao.class);
         orderService.orderDao = mockOrderDao;
         orderService.productDao = mockProductDao;
+        orderService.orderProductDao = mockOrderProductDao;
         TestAuthentication auth = new TestAuthentication();
         
         User user = new User(1, "foo", "bar", new ArrayList<>());
@@ -90,8 +96,10 @@ class OrderServiceTest {
         OrderService orderService = new OrderService();
         OrderDao mockOrderDao = Mockito.mock(OrderDao.class);
         ProductDao mockProductDao = Mockito.mock(ProductDao.class);
+        OrderProductDao mockOrderProductDao = Mockito.mock(OrderProductDao.class);
         orderService.orderDao = mockOrderDao;
         orderService.productDao = mockProductDao;
+        orderService.orderProductDao = mockOrderProductDao;
         TestAuthentication auth = new TestAuthentication();
 
         User user = new User(1, "foo", "bar", new ArrayList<>());
@@ -108,8 +116,10 @@ class OrderServiceTest {
         OrderService orderService = new OrderService();
         OrderDao mockOrderDao = Mockito.mock(OrderDao.class);
         ProductDao mockProductDao = Mockito.mock(ProductDao.class);
+        OrderProductDao mockOrderProductDao = Mockito.mock(OrderProductDao.class);
         orderService.orderDao = mockOrderDao;
         orderService.productDao = mockProductDao;
+        orderService.orderProductDao = mockOrderProductDao;
         TestAuthentication auth = new TestAuthentication();
 
         User user = new User(1, "foo", "bar", new ArrayList<>());
@@ -118,8 +128,10 @@ class OrderServiceTest {
         when(mockProductDao.findById(3)).thenReturn(Optional.of(product));
         when(mockOrderDao.findById(1)).thenReturn(Optional.of(userOrder));
         
+        
         OrderProduct purchase = new OrderProduct(2,null, product, 1, new BigDecimal("0.99"));
         Order newOrder = new Order(1, user, List.of(purchase), null);
+        when(mockOrderProductDao.save(purchase)).thenReturn(purchase);
         Response res = orderService.editOrder(newOrder, auth);
         
         assertTrue(res.isSuccess());

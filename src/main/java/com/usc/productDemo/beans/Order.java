@@ -1,5 +1,7 @@
 package com.usc.productDemo.beans;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -17,9 +19,10 @@ public class Order {
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @JsonIgnoreProperties({"password","profiles","enabled","credentialsNonExpired","accountNonExpired","accountNonLocked","authorities"})
     private User user;
     
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderProduct> purchases;
     
     @Column(nullable = false)

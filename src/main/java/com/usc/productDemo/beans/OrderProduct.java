@@ -18,7 +18,7 @@ public class OrderProduct {
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id", referencedColumnName = "id", nullable = false)
-    @JsonIgnoreProperties("purchases")
+    @JsonIgnoreProperties({"purchases", "user"})
     private Order order;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false)

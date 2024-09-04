@@ -5,6 +5,7 @@ import com.usc.productDemo.beans.OrderProduct;
 import com.usc.productDemo.beans.Product;
 import com.usc.productDemo.beans.User;
 import com.usc.productDemo.dao.OrderDao;
+import com.usc.productDemo.dao.OrderProductDao;
 import com.usc.productDemo.dao.ProductDao;
 import com.usc.productDemo.http.Response;
 import jakarta.transaction.Transactional;
@@ -29,6 +30,9 @@ public class OrderService {
     @Autowired
     ProductDao productDao;
     
+    @Autowired
+    OrderProductDao orderProductDao;
+    
     public Response placeOrder(Order order, Authentication auth) {
         try {
             List<OrderProduct> purchases = order.getPurchases();
@@ -38,7 +42,9 @@ public class OrderService {
                 op.setOrder(order);
             }
             order.setUser((User)auth.getPrincipal());
-            order.setPurchasingDate(Date.from(Instant.now()));
+            if (order.getPurchasingDate() == null) {
+                order.setPurchasingDate(Date.from(Instant.now()));
+            }
             orderDao.save(order);
             return new Response(true);
         } catch (Exception e) {
@@ -84,6 +90,7 @@ public class OrderService {
                         Product product = productDao.findById(op.getProduct().getId()).get();
                         op.setProduct(product);
                         op.setOrder(order);
+                        orderProductDao.save(op);
                     }
                     newOrder.setPurchases(purchases);
                 }
